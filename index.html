@@ -1,0 +1,2203 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CLEAN MARKUP = GOOD KARMA.
+      Hi source code lover,
+
+      you're a curious person and a fast learner ;)
+      Let's make something beautiful together. Contribute on Github:
+      https://github.com/webslides/webslides
+
+      Thanks,
+      @jlantunez.
+    -->
+
+    <!-- SEO -->
+    <title>Openstack Helm - depoly Openstack using Helm aplication</title>
+    <meta name="description" content="Openstack Helm - depoly Openstack using Helm aplication">
+
+    <!-- URL CANONICAL -->
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,700,700i%7CMaitree:200,300,400,600,700&amp;subset=latin-ext" rel="stylesheet">
+
+    <!-- CSS WebSlides -->
+    <link rel="stylesheet" type='text/css' media='all' href="static/css/webslides.css">
+
+    <!-- Optional - CSS SVG Icons (Font Awesome) -->
+    <link rel="stylesheet" type='text/css' media='all' href="static/css/svg-icons.css">
+
+    <!-- SOCIAL CARDS (ADD YOUR INFO) -->
+
+    <!-- FACEBOOK -->
+    <meta property="og:url" content="http://ovh.com/">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Quick Openstack deployment using Helm charts">
+    <meta property="og:description" content="You will learn a lot of interesting things!">
+    <meta property="og:updated_time" content="2018-11-29T17:20:50">
+    <meta property="og:image" content="static/images/share-webslides.jpg"> <!-- EDIT -->
+
+    <!-- TWITTER -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@webslides"> <!-- EDIT -->
+    <meta name="twitter:creator" content="@jlantunez"> <!-- EDIT -->
+    <meta name="twitter:title" content="WebSlides — Making HTML Presentations Easy"> <!-- EDIT -->
+    <meta name="twitter:description" content="WebSlides is about good karma. Just essential features. 120+ free slides ready to use."> <!-- EDIT -->
+    <meta name="twitter:image" content="static/images/share-webslides.jpg"> <!-- EDIT -->
+
+
+    <!-- Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#333333">
+
+  </head>
+  <body>
+    <main role="main">
+      <article id="webslides" class="horizontal">
+        <!-- section 1
+        <section  class="bg-apple"> -->
+        <section>
+             <div class="content-center">
+              <h1>Openstack Helm</h1>
+              <p>
+                Quick Openstack deployment using Helm charts
+              </p>
+            </div>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="Ovh"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 1  -->
+
+        <!-- section 2 -->
+        <section class="aligntop">
+          <div class="wrap size-60 ">
+          <h3>Table of Contents</h3>
+          <hr>
+            <div class="toc">
+              <ol>
+                <li>
+                  <span class="chapter">What is Helm?</span>
+                  <ol>
+                    <li><a href="#slide=3" title="About Kubernetes"><span class="chapter">Few words about Kubernetes and package manager</span>
+                      <span class="toc-page">3</span></a>
+                    </li>
+                  </ol>
+                  </a>
+                </li>
+
+                <li>
+                  <span class="chapter">What is Openstack Helm?</span>
+                  <ol>
+                    <li><a href="#slide=8" title="OS Helm technologies"><span class="chapter">Openstack Helm</span>
+                      <span class="toc-page">8</span></a>
+                    </li>
+                    <li><a href="#slide=10" title="Network architecture"><span class="chapter">Network architecture in Kubernetes with Calico</span>
+                      <span class="toc-page">10</span></a>
+                    </li>
+                    <li><a href="#slide=12" title="How it works"><span class="chapter">Example of Helm chart - how does it works?</span>
+                      <span class="toc-page">12</span></a>
+                    </li>
+                    <li><a href="#slide=15" title="Openstack Kolla"><span class="chapter">Alternatives for Openstack Helm in OS world</span>
+                      <span class="toc-page">15</span></a>
+                    </li>
+                    <li><a href="#slide=16" title="Visualisation"><span class="chapter">Visualisation of Kolla, Kolla Kubernetes, OS Helm</span>
+                      <span class="toc-page">16</span></a>
+                    </li>
+                  </ol>
+                  </a>
+                </li>
+
+                <li>
+                  <span class="chapter">Workshops</span>
+                  <ol>
+                    <li><a href="#slide=17" title="What we will do :)"><span class="chapter">What we will do on workshops?</span>
+                      <span class="toc-page">17</span></a>
+                    </li>
+                    <li><a href="#slide=23" title="New cluster"><span class="chapter">Deploying new Kubernetes cluster</span>
+                      <span class="toc-page">23</span></a>
+                    </li>
+                    <li><a href="#slide=31" title="New cluster"><span class="chapter">Deploying new Openstack control plane</span>
+                      <span class="toc-page">31</span></a>
+                    </li>
+                    <li><a href="#slide=41" title="Usefull commands"><span class="chapter">Adding Compute host into control plane</span>
+                      <span class="toc-page">41</span></a>
+                    </li>
+                  </ol>
+                  </a>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </section>
+        <!-- end section 2  -->
+
+        <!-- section 3 -->
+        <section class="bg-black aligncenter">
+          <span class="background dark" style="background-image:url('../presentation/img/kubernetes_helm.png')"></span>
+          <div class="wrap">
+            <h2 class="text-landing">Kubernetes and Helm</h2>
+            <p class="text-intro">Small introduction to Kubernetes and Helm</p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="whitelogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 3  -->
+
+        <!-- section 4 -->
+        <section>
+          <div class="wrap">
+            <img class="alignright size-40" src="../presentation/img/kubernetes.png" alt="Kubernetes">
+            <h3>What is Kubernetes?</h3>
+            <p>- open-source container-orchestration system for automating deployment designed by Google</p>
+            <p>- container, microservices and portable cloud platform</p>
+            <p>- set label per host - enable users to decorate resources with custom information to facilitate their workflows and provide an easy way for management tools to checkpoint state.</p>
+            <p>- you can use Docker as a container backend</p>
+            <p>- high availability </p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 4  -->
+
+        <!-- section 5 -->
+        <section>
+          <div class="wrap">
+            <img class="alignright size-40" src="../presentation/img/helm_logo.png" alt="Helm">
+              <h3>What is Helm?</h3>
+              <p></p>
+              <p>- it helps you manage Kubernetes applications — Helm Charts helps you define, install, and upgrade even the most complex Kubernetes application.</p>
+              <p>- charts are easy to create, version, share, and publish — so start using Helm and stop the copy-and-paste madness.</p>
+              <p>- manage Complexity- Charts describe even the most complex apps, provide repeatable application installation, and serve as a single point of authority.</p>
+              <p>- easy updates, rollbacks
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 5  -->
+
+        <!-- section 6 -->
+        <section>
+          <div class="wrap">
+            <img class="alignright size-60" src="../presentation/img/helm_architecture.png" alt="Helm">
+              <h3>Helm architecture - helm client</h3>
+             <ul>
+                 <li>command-line client for end users</li>
+                 <li>responsible for:
+                 <ul>
+                     <li>Local chart development</li>
+                     <li>Managing repositories</li>
+                     <li>Interacting with the Tiller server
+
+                     <ul>
+                     <li>Sending charts to be installed</li>
+                     <li>Asking for information about releases</li>
+                     <li>Requesting upgrading or uninstalling of existing releases</li>
+                     </ul></li>
+                 </ul></li>
+             </ul>
+             <p>The Helm client is written in the Go programming language, and uses the gRPC protocol suite to interact with the Tiller server.</p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 6  -->
+
+        <!-- section 7 -->
+        <section>
+          <div class="wrap">
+            <img class="alignright size-60" src="../presentation/img/helm_architecture.png" alt="Helm">
+             <h3>Helm architecture - tiller server</h3>
+             <ul>
+                 <li>Listening for incoming requests from the Helm client</li>
+                 <li>Combining a chart and configuration to build a release</li>
+                 <li>Installing charts into Kubernetes, and then tracking the subsequent
+                 release</li>
+                 <li>Upgrading and uninstalling charts by interacting with Kubernetes</li>
+             </ul>
+             <p>The Tiller server is also written in Go. It provides a gRPC server to connect with the client, and it uses the Kubernetes client library to communicate with Kubernetes. Currently, that library uses REST+JSON.</p>
+             <p>The Tiller server stores information in ConfigMaps located inside of Kubernetes. It does not need its own database.</p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 7  -->
+
+        <!-- section 8 -->
+        <section class="bg-black aligncenter">
+          <span class="background dark" style="background-image:url('../presentation/img/openstack_helm.png')"></span>
+          <div class="wrap">
+            <h2 class="text-landing">Openstack Helm</h2>
+            <p class="text-intro">Introduction into OS Helm project and its charts</p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="whitelogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 8  -->
+
+        <!-- section 9 -->
+        <section class="fullscreen">
+          <div class="wrap">
+            <img class="alignright size-40" src="../presentation/img/openstack.png" alt="Openstack">
+              <h3>What is Openstack Helm?</h3>
+              <p>- AT&T was a founder</p>
+              <p>- it provides a collection of Helm charts that simply, resiliently, and flexibly deploy OpenStack and related services on Kubernetes.</p>
+              <p>- is focused on the deployment of OpenStack (and associated) Projects, rather than the development of the projects themselves, and also requires additional supporting infrastructure</p>
+              <p>- there are also charts to deploy Ceph</p>
+              <p>- improve Openstack CI/CD workflow</p>
+              <p>- support upgrade and rollback of services</p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 9  -->
+
+        <!-- section 10 -->
+        <section class="fullscreen">
+          <div class="wrap flex-content slide-top">
+            <img class="alignright size-60" src="../presentation/img/calico.png" alt="Calico">
+            <div class="size-50">
+              <h3>Network architecture in Kubernetes with Calico</h3>
+              <p>- <b>Felix</b> - the primary Calico agent that runs on each machine that hosts endpoints</p>
+              <p>- <b>Orchestration plugin</b> - orchestrator-specific code that tightly integrates Calico into that orchestrator</p>
+              <p>- <b>etcd</b> - consistent and highly-available key value store used as Kubernetes’ backing store for all cluster data. </p>
+              <p>- <b>BIRD</b> - BGP client that distributes routing information</p>
+              <p>- <b>BGP Route Reflector</b> - optional BGP route reflector for higher scale</p>
+              <p>On this meetup, we will not use BGP route reflector.</p>
+          </div>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 10  -->
+
+        <!-- section 11 -->
+        <section class="fullscreen">
+          <div class="wrap">
+            <div class="slide-top content-center">
+              <h3>Calico networking:</h3>
+            </div>
+            <img class="aligncenter size-80" src="../presentation/img/calico-networking.png" alt="Calico networking">
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 11  -->
+
+        <!-- section 12 -->
+        <section>
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3>Example of Helm chart - how does it works?</h3>
+                <p>Helm chart <strong>directory structure:</strong></p>
+                <pre>
+someApp/
+  Chart.yaml         <!-- # A YAML file containing information about the chart -->
+  LICENSE             # OPTIONAL<!--: A plain text file containing the license for the chart -->
+  README.md           # OPTIONAL<!--: A human-readable README file -->
+  requirements.yaml   # OPTIONAL<!--: A YAML file listing dependencies for the chart -->
+  values.yaml        <!-- # The default configuration values for this chart -->
+  charts/            <!-- # A directory containing any charts upon which this chart depends. -->
+  templates/         <!-- # A directory of templates that, when combined with values, # will generate valid Kubernetes manifest files. -->
+  templates/NOTES.txt<!-- # OPTIONAL: A plain text file containing short usage notes -->
+                </pre>
+              </div>
+              <div class="column">
+                <p>Let's take MariaDB Helm chart - <strong>Chart.yaml</strong></p>
+                <pre>
+name: mariadb
+version: 5.2.3
+appVersion: 10.1.37
+description: Fast, reliable, scalable, and easy to use open-source relational database system. MariaDB Server is intended for mission-critical, heavy-load production systems as well as for embedding into mass-deployed software. Highly available MariaDB cluster.
+keywords:
+- mariadb
+- mysql
+- database
+- sql
+- prometheus
+home: https://mariadb.org
+icon: https://bitnami.com/assets/stacks/mariadb/img/mariadb-stack-220x234.png
+sources:
+- https://github.com/bitnami/bitnami-docker-mariadb
+- https://github.com/prometheus/mysqld_exporter
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl</pre>
+              </div>
+            </div>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 12  -->
+
+        <!-- section 13 -->
+        <section>
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3>Example of Helm chart - how does it works? c.d.</h3>
+                <p>Let's take MariaDB Helm chart - <strong>values.yaml</strong></p>
+              </div>
+              <div class="column">
+                <pre>
+image:
+  registry: docker.io
+  repository: bitnami/mariadb
+  tag: 10.1.37
+service:
+  type: ClusterIP
+  port: 3306
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
+rootUser:
+  password:
+  forcePassword: false
+...</pre>
+              </div>
+            </div>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 13  -->
+
+        <!-- section 14 -->
+        <section>
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3>Example of Helm chart - how does it works? c.d.</h3>
+                <p>Next step: templates: <strong>templates/secrets.yaml</strong></p>
+              </div>
+              <div class="column">
+                <pre>
+<span class="code-comment">&lt;!-- from values.yaml --&gt;</span>
+...
+rootUser:
+  password:
+  forcePassword: false
+
+<span class="code-comment">&lt;!-- from templates/secrets.yaml --&gt;</span>
+data:
+  {{- if <span class="code-comment">.Values.rootUser.password</span> }}
+  mariadb-root-password: "{{ <span class="code-comment">.Values.rootUser.password</span> | b64enc }}"
+  {{- else if (not <span class="code-comment">.Values.rootUser.forcePassword</span>) }}
+  mariadb-root-password: "{{ randAlphaNum 10 | b64enc }}"
+  {{ else }}
+  mariadb-root-password: {{ required "A MariaDB Root Password is required!" <span class="code-comment">.Values.rootUser.password</span> }}
+  {{- end }}
+                </pre>
+              </div>
+            </div>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+          <!-- .end .wrap -->
+        </section>
+        <!-- end section 14  -->
+
+        <!-- section 15 -->
+        <section class="fullscreen">
+          <div class="wrap">
+            <img class="alignright size-40" src="../presentation/img/kolla_2.png" alt="Openstack Kolla">
+            <div class="size-50">
+              <h3>Alternative for Helm - Openstack Kolla-Kubernetes</h3>
+              <p></p>
+              <p>- <b>mission statement</b>: "provides production-ready containers and deployment tools for operating OpenStack clouds that are scalable, fast, reliable, and upgradable using community best practices" (Openstack Kolla project)</p>
+              <p>- siplified operations and deployment - configuration managment support with Ansible (Openstack Kolla-Ansible project) </p>
+              <p>- kolla kubernetes - converted Jinja2 templates to Helm charts; one solution for containers, virtual machines, and bare metal</p>
+              <p>- support prometheus and Ironic</p>
+              <p>- <strong>"Kolla Kubernetes - project is no longer maintained" - For an alternative, consider checking the project Openstack Helm</strong></p>
+            </div>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 15  -->
+
+        <!-- section 16 
+          <div class="wrap">
+        
+          </div>
+        -->
+        <section class="fullscreen">
+            <div class="slide-top content-center">
+              <h3>Visualisation of Kolla, Kolla-Kubernetes and Openstack Helm</h3>
+              <p></p>
+            </div>
+            <img class="aligncenter size-70" src="../presentation/img/kolla_kolla_kubernetes_helm.png" alt="All kollas helm">
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+        <!-- end section 16  -->
+
+<!-- workshop -->
+
+    <!-- section 18 -->
+    <section class="bg-black aligncenter">
+      <span class="background dark" style="background-image:url('../presentation/img/love-os.png')"></span>
+      <div class="wrap">
+        <h2 class="text-landing">OPENSTACK DEPLOYMENT USING K8S AND HELM</h2>
+        <p class="text-intro"></p>
+      </div>
+      <!-- .end .wrap -->
+      <footer>
+        <div class="wrap">
+          <p>
+            <span class="alignleft"><img class="whitelogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+            <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+          </p>
+        </div>
+      </footer>
+    </section>
+    <!-- end section 18  -->
+
+<!-- gen ssh key -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+             <h3><strong>Workshop is based on Openstack-HELM</strong></h3>
+             <p class="text-intro">All scripts has been taken from repositories and documentation.</p>
+             <p><strong>https://docs.openstack.org/openstack-helm/latest/readme.html</strong></p>
+             <pre>https://git.openstack.org/openstack/openstack-helm-infra.git
+https://git.openstack.org/openstack/openstack-helm.git</pre>
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end gen ssh key -->
+
+
+<!-- gen ssh key -->
+
+
+        <section>
+          <div class="wrap size-80">
+            <img class="alignright size-40" src="../presentation/img/schema-workshop-1.png" alt="Scenario 1">
+            <h2>Scenario 1</h2>
+            <p>In this scenario we will add new host to the control plane with compute host services.</p>
+            <p>Control plane will be now in HA state</p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end gen ssh key -->
+
+<!-- gen ssh key -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3><strong>Key pairs</strong></h3>
+                <p class="text-intro">Please generate RSA keypair and copy it across servers.</p>
+                <p>Dedicated jumpbox user is given to you.</p>
+                <p>Servers user is standard: <strong>ubuntu</strong>.</p>
+                <p>Password for jumpbox is also common for all other hosts.</p>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <pre># execute on server_1
+ssh-keygen -t rsa
+sudo mkdir /etc/openstack-helm
+sudo cp /home/ubuntu/.ssh/id_rsa /etc/openstack-helm/deploy-key.pem
+sudo chown ubuntu /etc/openstack-helm/deploy-key.pem
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+# copy ssh_key to server_2
+ssh-copy-id -i ~/.ssh/id_rsa.pub ubuntu@&lt;SERVER_2_IP&gt;</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end gen ssh key -->
+
+
+<!-- generate inventory -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3><strong>Inventory</strong></h3>
+                <p class="text-intro">Please generate hosts inventory file</p>
+                <p>This script will create <strong>/opt/openstack-helm-infra/tools/gate/devel/multinode-inventory.yaml</strong> file.</p>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <pre># execute on server_1
+export node_one_ip=$(hostname -I | awk {'print $1'})
+export node_two_ip=&lt;SERVER_2_IP&gt;
+/opt/openstack-helm-infra/tools/gen-multinode-inventory.sh</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- generate inventory -->
+
+<!-- check ssh connection -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3><strong>Verify connection</strong></h3>
+                <p class="text-intro">Please verify ssh connection to second node.</p>
+                <p>Please ask us if your ssh connection to second host doesn't work.</p>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <pre># execute on server_1
+ssh -i /etc/openstack-helm/deploy-key.pem ubuntu@&lt;SERVER_2_IP&gt;</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end check ssh connection  -->
+
+
+
+<!-- install k8s -->
+<!-- section 22 -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3><strong>Install k8s</strong></h3>
+                <p class="text-intro">Please install Kubernetes on cluster.</p>
+                <p>This step could take some time.</br> This step needs to be executed on server_1.</p>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <pre># execute on server_1
+cd /opt/openstack-helm-infra
+make dev-deploy setup-host multinode
+make dev-deploy k8s multinode
+              </pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end install k8s -->
+<!-- end section 22 -->
+
+<!-- generate openstack client configuration-->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>Openstack client</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>export FQDN=&lt;USER_NAME&gt;.workshops.ovh
+export OS_CLOUD=openstack_helm
+cd /opt/openstack-helm
+./tools/deployment/multinode/010-setup-client.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>sudo -H -E pip install "cmd2<=0.8.7"
+sudo -H -E pip install python-openstackclient python-heatclient --ignore-installed
+
+sudo -H mkdir -p /etc/openstack
+sudo -H chown -R $(id -un): /etc/openstack
+tee /etc/openstack/clouds.yaml << EOF
+clouds:
+  openstack_helm:
+    region_name: RegionOne
+    identity_api_version: 3
+    auth:
+      username: 'admin'
+      password: 'password'
+      project_name: 'admin'
+      project_domain_name: 'default'
+      user_domain_name: 'default'
+      auth_url: 'http://keystone.${FQDN}/v3'
+EOF
+
+#NOTE: Build charts
+make all</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end install clients -->
+
+<!-- INGRESS -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL INGRESS API (NGINX)</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/020-ingress.sh
+              </pre>
+              <p class="text-intro">Watch installation:</p>
+              <pre>
+watch "kubectl get pods --all-namespaces | grep -i ingress"
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>#NOTE: Deploy global ingress
+: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+tee /tmp/ingress-kube-system.yaml << EOF
+pod:
+  replicas:
+    error_page: 2
+deployment:
+  mode: cluster
+  type: DaemonSet
+network:
+  host_namespace: true
+EOF
+helm upgrade --install ingress-kube-system ${OSH_INFRA_PATH}/ingress \
+  --namespace=kube-system \
+  --values=/tmp/ingress-kube-system.yaml \
+  ${OSH_EXTRA_HELM_ARGS} \
+  ${OSH_EXTRA_HELM_ARGS_INGRESS_KUBE_SYSTEM}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh kube-system
+
+#NOTE: Display info
+helm status ingress-kube-system
+
+#NOTE: Deploy namespaced ingress controllers
+for NAMESPACE in openstack ceph; do
+  #NOTE: Deploy namespace ingress
+  tee /tmp/ingress-${NAMESPACE}.yaml << EOF
+pod:
+  replicas:
+    ingress: 2
+    error_page: 2
+EOF
+  helm upgrade --install ingress-${NAMESPACE} ${OSH_INFRA_PATH}/ingress \
+    --namespace=${NAMESPACE} \
+    --values=/tmp/ingress-${NAMESPACE}.yaml
+
+  #NOTE: Wait for deploy
+  ./tools/deployment/common/wait-for-pods.sh ${NAMESPACE}
+
+  #NOTE: Display info
+  helm status ingress-${NAMESPACE}
+done</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INGRESS -->
+
+<!-- CEPH -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL CEPH CLUSTER</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/030-ceph.sh
+              </pre>
+              <p class="text-intro">Watch installation:</p>
+              <pre>
+watch "kubectl get pods --all-namespaces | grep -i ceph"
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>...
+: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+for CHART in ceph-mon ceph-osd ceph-client ceph-provisioners; do
+  helm upgrade --install ${CHART} ${OSH_INFRA_PATH}/${CHART} \
+    --namespace=ceph \
+    --values=/tmp/ceph.yaml \
+    ${OSH_EXTRA_HELM_ARGS} \
+    ${OSH_EXTRA_HELM_ARGS_CEPH_DEPLOY}
+
+  #NOTE: Wait for deploy
+  ./tools/deployment/common/wait-for-pods.sh ceph 1200
+
+  #NOTE: Validate deploy
+  MON_POD=$(kubectl get pods \
+    --namespace=ceph \
+    --selector="application=ceph" \
+    --selector="component=mon" \
+    --no-headers | awk '{ print $1; exit }')
+  kubectl exec -n ceph ${MON_POD} -- ceph -s
+done</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INSTALL CEPH CLUSTER -->
+
+<!-- ENABLE CEPH FOR OTHER NAMESPACES -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>ENABLE CEPH FOR OTHER NAMESPACES</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/040-ceph-ns-activate.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>#NOTE: Deploy command
+CEPH_PUBLIC_NETWORK="$(./tools/deployment/multinode/kube-node-subnet.sh)"
+CEPH_CLUSTER_NETWORK="$(./tools/deployment/multinode/kube-node-subnet.sh)"
+tee /tmp/ceph-openstack-config.yaml << EOF
+endpoints:
+  identity:
+    namespace: openstack
+  object_store:
+    namespace: ceph
+  ceph_mon:
+    namespace: ceph
+network:
+  public: ${CEPH_PUBLIC_NETWORK}
+  cluster: ${CEPH_CLUSTER_NETWORK}
+deployment:
+  storage_secrets: false
+  ceph: false
+  rbd_provisioner: false
+  cephfs_provisioner: false
+  client_secrets: true
+  rgw_keystone_user_and_endpoints: false
+bootstrap:
+  enabled: false
+conf:
+  rgw_ks:
+    enabled: true
+EOF
+
+: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+helm upgrade --install ceph-openstack-config ${OSH_INFRA_PATH}/ceph-provisioners \
+  --namespace=openstack \
+  --values=/tmp/ceph-openstack-config.yaml \
+  ${OSH_EXTRA_HELM_ARGS} \
+  ${OSH_EXTRA_HELM_ARGS_CEPH_NS_ACTIVATE}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+helm status ceph-openstack-config</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end ENABLE CEPH NS -->
+
+
+<!-- INSTALL MARIADB -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL MARIADB (in parallel)</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/050-mariadb.sh
+              </pre>
+              <p class="text-intro">Wait untill:</p>
+              <pre>
+kubectl get pods --all-namespaces | grep -Ei "(completed|running)"
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>tee /tmp/mariadb.yaml << EOF
+pod:
+  replicas:
+    server: 1
+    ingress: 1
+EOF
+: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+helm upgrade --install mariadb ${OSH_INFRA_PATH}/mariadb \
+    --namespace=openstack \
+    --values=/tmp/mariadb.yaml \
+    ${OSH_EXTRA_HELM_ARGS} \
+    ${OSH_EXTRA_HELM_ARGS_MARIADB}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+helm status mariadb</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INSTALL MARIADB -->
+
+<!-- INSTALL RABBITMQ -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL RABBITMQ (in parallel)</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/060-rabbitmq.sh
+              </pre>
+              <p class="text-intro">Wait untill:</p>
+              <pre>
+kubectl get pods --all-namespaces | grep -Ei "(completed|running)"
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+: ${OSH_EXTRA_HELM_ARGS:=""}
+helm upgrade --install rabbitmq ${OSH_INFRA_PATH}/rabbitmq \
+    --namespace=openstack \
+    ${OSH_EXTRA_HELM_ARGS} \
+    ${OSH_EXTRA_HELM_ARGS_RABBITMQ}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+helm status rabbitmq</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INSTALL RABBITMQ -->
+
+
+<!-- INSTALL MEMCACHED -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL MEMCACHED (in parallel)</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/070-memcached.sh
+              </pre>
+              <p class="text-intro">Wait untill:</p>
+              <pre>
+watch "kubectl get pods --namespace openstack  | grep -viE '(running|completed)'"
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+make -C ${OSH_INFRA_PATH} memcached
+
+tee /tmp/memcached.yaml << EOF
+manifests:
+  network_policy: true
+network_policy:
+  memcached:
+    ingress:
+      - from:
+        - podSelector:
+            matchLabels:
+              application: keystone
+        - podSelector:
+            matchLabels:
+              application: heat
+        - podSelector:
+            matchLabels:
+              application: glance
+        - podSelector:
+            matchLabels:
+              application: cinder
+        ...
+        ports:
+        - protocol: TCP
+          port: 11211
+EOF
+
+#NOTE: Deploy command
+: ${OSH_EXTRA_HELM_ARGS:=""}
+helm upgrade --install memcached ${OSH_INFRA_PATH}/memcached \
+    --namespace=openstack \
+    --values=/tmp/memcached.yaml \
+    ${OSH_EXTRA_HELM_ARGS} \
+    ${OSH_EXTRA_HELM_ARGS_MEMCACHED}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+helm status memcached</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INSTALL MEMCACHED -->
+
+<!-- INSTALL KEYSTONE -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL KEYSTONE</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>export FQDN=&lt;USER_NAME&gt;.workshops.ovh
+cd /opt/openstack-helm
+./tools/deployment/multinode/080-keystone.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>helm upgrade --install keystone ./keystone \
+    --set endpoints.identity.host_fqdn_override.public=keystone.$FQDN \
+    --set network.node_port.enabled=true \
+    --namespace=openstack \
+    --set pod.replicas.api=2 \
+    ${OSH_EXTRA_HELM_ARGS} \
+    ${OSH_EXTRA_HELM_ARGS_KEYSTONE}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+helm status keystone
+export OS_CLOUD=openstack_helm
+sleep 30 #NOTE(portdirect): Wait for ingress controller to update rules and restart Nginx
+openstack endpoint list
+helm test keystone --timeout 900</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INSTALL KEYSTONE -->
+
+<!-- INSTALL CEPH RADOS GATEWAY-->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL CEPH RADOS GATEWAY</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/090-ceph-radosgateway.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>CEPH_PUBLIC_NETWORK="$(./tools/deployment/multinode/kube-node-subnet.sh)"
+CEPH_CLUSTER_NETWORK="$(./tools/deployment/multinode/kube-node-subnet.sh)"
+tee /tmp/radosgw-openstack.yaml << EOF
+endpoints:
+  identity:
+    namespace: openstack
+  object_store:
+    namespace: openstack
+  ceph_mon:
+    namespace: ceph
+network:
+  public: ${CEPH_PUBLIC_NETWORK}
+  cluster: ${CEPH_CLUSTER_NETWORK}
+deployment:
+  storage_secrets: false
+  ceph: true
+  rbd_provisioner: false
+  cephfs_provisioner: false
+  client_secrets: false
+  rgw_keystone_user_and_endpoints: true
+bootstrap:
+  enabled: false
+conf:
+  rgw_ks:
+    enabled: true
+EOF
+
+: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+helm upgrade --install radosgw-openstack ${OSH_INFRA_PATH}/ceph-rgw \
+  --namespace=openstack \
+  --values=/tmp/radosgw-openstack.yaml \
+  ${OSH_EXTRA_HELM_ARGS} \
+  ${OSH_EXTRA_HELM_ARGS_HEAT}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+helm status radosgw-openstack
+export OS_CLOUD=openstack_helm
+openstack service list
+openstack container create 'mygreatcontainer'
+curl -L -o /tmp/important-file.jpg https://imgflip.com/s/meme/Cute-Cat.jpg
+openstack object create --name 'superimportantfile.jpg' 'mygreatcontainer' /tmp/important-file.jpg</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INSTALL CEPH RADOSGATEWAY -->
+
+<!-- INSTALL GLANCE-->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL GLANCE</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>export FQDN=&lt;USER_NAME&gt;.workshops.ovh
+cd /opt/openstack-helm
+./tools/deployment/multinode/100-glance.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>#NOTE: Deploy command
+: ${OSH_OPENSTACK_RELEASE:="newton"}
+#NOTE(portdirect), this could be: radosgw, rbd, swift or pvc
+: ${GLANCE_BACKEND:="swift"}
+tee /tmp/glance.yaml << EOF
+storage: ${GLANCE_BACKEND}
+pod:
+  replicas:
+    api: 2
+    registry: 2
+EOF
+if [ "x${OSH_OPENSTACK_RELEASE}" == "xnewton" ]; then
+# NOTE(portdirect): glance APIv1 is required for heat in Newton
+  tee -a /tmp/glance.yaml << EOF
+conf:
+  glance:
+    DEFAULT:
+      enable_v1_api: true
+      enable_v2_registry: true
+manifests:
+  deployment_registry: true
+  ingress_registry: true
+  pdb_registry: true
+  service_ingress_registry: true
+EOF
+fi
+helm upgrade --install glance ./glance \
+  --namespace=openstack \
+  --values=/tmp/glance.yaml \
+  --set endpoints.image.host_fqdn_override.public=glance.$FQDN \
+  --set endpoints.identity.host_fqdn_override.public=keystone.$FQDN \
+  ${OSH_EXTRA_HELM_ARGS} \
+  ${OSH_EXTRA_HELM_ARGS_GLANCE}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+helm status glance
+export OS_CLOUD=openstack_helm
+openstack service list
+sleep 30 #NOTE(portdirect): Wait for ingress controller to update rules and restart Nginx
+openstack image list
+openstack image show 'Cirros 0.3.5 64-bit'
+helm test glance --timeout 900</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INSTALL GLANCE -->
+
+<!-- INSTALL OPENVSWITCH-->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL OPENVSWITCH</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/120-openvswitch.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+helm upgrade --install openvswitch ${OSH_INFRA_PATH}/openvswitch \
+  --namespace=openstack \
+  ${OSH_EXTRA_HELM_ARGS} \
+  ${OSH_EXTRA_HELM_ARGS_OPENVSWITCH}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+helm status openvswitch</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end INSTALL OPENVSWITCH -->
+
+<!-- INSTALL LIBVIRT -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL LIBVIRT</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>cd /opt/openstack-helm
+./tools/deployment/multinode/130-libvirt.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>#NOTE: Deploy libvirt
+: ${OSH_INFRA_PATH:="../openstack-helm-infra"}
+helm upgrade --install libvirt ${OSH_INFRA_PATH}/libvirt \
+  --namespace=openstack \
+  ${OSH_EXTRA_HELM_ARGS} \
+  ${OSH_EXTRA_HELM_ARGS_LIBVIRT}
+
+#NOTE(portdirect): We don't wait for libvirt pods to come up, as they depend
+# on the neutron agents being up.
+
+#NOTE: Validate Deployment info
+helm status libvirt</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end LIBVIRT -->
+
+<!-- INSTALL NOVA AND NEUTRON -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>INSTALL NOVA AND NEUTRON</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>export FQDN=&lt;USER_NAME&gt;.workshops.ovh
+cd /opt/openstack-helm
+./tools/deployment/multinode/140-compute-kit.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>#NOTE: Deploy nova
+tee /tmp/nova.yaml << EOF
+labels:
+  api_metadata:
+    node_selector_key: openstack-helm-node-class
+    node_selector_value: primary
+pod:
+  replicas:
+    api_metadata: 1
+    placement: 2
+    osapi: 2
+    conductor: 2
+    consoleauth: 2
+    scheduler: 1
+    novncproxy: 1
+EOF
+if [ "x$(systemd-detect-virt)" == "xnone" ]; then
+  echo 'OSH is not being deployed in virtualized environment'
+  helm upgrade --install nova ./nova \
+      --namespace=openstack \
+      --values=/tmp/nova.yaml \
+      --set endpoints.compute.host_fqdn_override.public=nova.$FQDN \
+      --set endpoints.compute_metadata.host_fqdn_override.public=metadata.$FQDN \
+      --set endpoints.image.host_fqdn_override.public=glance.$FQDN \
+      --set endpoints.network.host_fqdn_override.public=neutron.$FQDN \
+      --set endpoints.identity.host_fqdn_override.public=keystone.$FQDN \
+      --set endpoints.compute_novnc_proxy.host_fqdn_override.public=novnc.$FQDN \
+      ${OSH_EXTRA_HELM_ARGS} \
+      ${OSH_EXTRA_HELM_ARGS_NOVA}
+else
+  echo 'OSH is being deployed in virtualized environment, using qemu for nova'
+  helm upgrade --install nova ./nova \
+      --namespace=openstack \
+      --set endpoints.compute.host_fqdn_override.public=nova.$FQDN \
+      --set endpoints.compute_metadata.host_fqdn_override.public=metadata.$FQDN \
+      --set endpoints.image.host_fqdn_override.public=glance.$FQDN \
+      --set endpoints.network.host_fqdn_override.public=neutron.$FQDN \
+      --set endpoints.identity.host_fqdn_override.public=keystone.$FQDN \
+      --set endpoints.compute_novnc_proxy.host_fqdn_override.public=novnc.$FQDN \
+      --values=/tmp/nova.yaml \
+      --set conf.nova.libvirt.virt_type=qemu \
+      --set conf.nova.libvirt.cpu_mode=none \
+      ${OSH_EXTRA_HELM_ARGS} \
+      ${OSH_EXTRA_HELM_ARGS_NOVA}
+fi
+
+#NOTE: Deploy neutron
+#NOTE(portdirect): for simplicity we will assume the default route device
+# should be used for tunnels
+NETWORK_TUNNEL_DEV="$(sudo ip -4 route list 0/0 | awk '{ print $5; exit }')"
+tee /tmp/neutron.yaml << EOF
+network:
+  interface:
+    tunnel: "${NETWORK_TUNNEL_DEV}"
+labels:
+  agent:
+    dhcp:
+      node_selector_key: openstack-helm-node-class
+      node_selector_value: primary
+    l3:
+      node_selector_key: openstack-helm-node-class
+      node_selector_value: primary
+    metadata:
+      node_selector_key: openstack-helm-node-class
+      node_selector_value: primary
+pod:
+  replicas:
+    server: 2
+conf:
+  neutron:
+    DEFAULT:
+      l3_ha: False
+      min_l3_agents_per_router: 1
+      max_l3_agents_per_router: 1
+      l3_ha_network_type: vxlan
+      dhcp_agents_per_network: 1
+  plugins:
+    ml2_conf:
+      ml2_type_flat:
+        flat_networks: public
+    openvswitch_agent:
+      agent:
+        tunnel_types: vxlan
+      ovs:
+        bridge_mappings: public:br-ex
+EOF
+helm upgrade --install neutron ./neutron \
+    --namespace=openstack \
+    --set endpoints.network.host_fqdn_override.public=neutron.$FQDN \
+    --set endpoints.compute.host_fqdn_override.public=nova.$FQDN \
+    --set endpoints.identity.host_fqdn_override.public=keystone.$FQDN \
+    --values=/tmp/neutron.yaml \
+    ${OSH_EXTRA_HELM_ARGS} \
+    ${OSH_EXTRA_HELM_ARGS_NEUTRON}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment info
+export OS_CLOUD=openstack_helm
+openstack service list
+sleep 30 #NOTE(portdirect): Wait for ingress controller to update rules and restart Nginx
+openstack compute service list
+openstack network agent list
+helm test nova --timeout 900
+helm test neutron --timeout 900</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end END DEPLOY NOVA AND NEUTRON -->
+
+
+<!-- DEPLOY HORIZON -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>DEPLOY HORIZON</strong></h3>
+            <div class="grid sm">
+              <div class="column">
+              <p class="text-intro">Please execute on server_1:</p>
+<pre>export FQDN=&lt;USER_NAME&gt;.workshops.ovh
+cd /opt/openstack-helm
+./tools/deployment/multinode/999-horizon.sh
+              </pre>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+              <p class="text-intro">Body of this script:</p>
+<pre>#NOTE: Deploy command
+helm upgrade --install horizon ./horizon \
+  --namespace=openstack \
+  --set network.node_port.enabled=true \
+  --set network.node_port.port=31000 \
+  --set endpoints.dashboard.host_fqdn_override.public=horizon.$FQDN \
+  --set endpoints.identity.host_fqdn_override.public=keystone.$FQDN \
+  ${OSH_EXTRA_HELM_ARGS} \
+  ${OSH_EXTRA_HELM_ARGS_HORIZON}
+
+#NOTE: Wait for deploy
+./tools/deployment/common/wait-for-pods.sh openstack
+
+#NOTE: Validate Deployment
+export OS_CLOUD=openstack_helm
+openstack service list
+helm status horizon</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end DEPLOY HORIZON -->
+
+
+<section class="bg-black aligncenter">
+  <div class="wrap">
+    <h2 class="text-landing">Openstack IS UP AND READY</h2>
+    <p class="text-intro"></p>
+  </div>
+  <!-- .end .wrap -->
+  <footer>
+    <div class="wrap">
+      <p>
+        <span class="alignleft"><img class="whitelogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+        <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+      </p>
+    </div>
+  </footer>
+</section>
+
+
+<!-- SPAWN VM -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3><strong>Spawn VM</strong></h3>
+                <p class="text-intro">Please create network and then spawn VM.</p>
+                <p class="text-intro">Please execute on server_1.</p>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+<pre>export OS_CLOUD=openstack_helm
+
+openstack network create local
+
+openstack subnet create --network local --dns-nameserver 8.8.8.8 --allocation-pool start=10.10.10.100,end=10.10.10.200 --subnet-range 10.10.10.0/24 local-subnet
+
+openstack server create --flavor m1.tiny --image 'Cirros 0.3.5 64-bit' --network local test-vm-1
+</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+
+          </footer>
+        </section>
+<!-- END SPAWN VM -->
+
+<!-- LOGIN TO HORIZON -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+              <h3><strong>LOGIN TO HORIZON</strong></h3>
+              <p class="text-intro">Please login to Horizon.</p>
+              <p>
+<strong>url:</strong> http://horizon.&lt;USER_NAME&gt;.workshops.ovh</br>
+<strong>login:</strong> admin</br>
+<strong>password:</strong> password</br>
+<strong>domain:</strong> default</br></p>
+              <!-- .end .column -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- END SPAWN VM -->
+
+
+<section class="bg-black aligncenter">
+  <div class="wrap">
+    <h2 class="text-landing">SCALING OPENSTACK</h2>
+    <p class="text-intro"></p>
+  </div>
+  <!-- .end .wrap -->
+  <footer>
+    <div class="wrap">
+      <p>
+        <span class="alignleft"><img class="whitelogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+        <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+      </p>
+    </div>
+  </footer>
+</section>
+
+<!-- gen ssh key -->
+        <section>
+          <div class="wrap size-80">
+            <img class="alignright size-40" src="../presentation/img/schema-workshop-2.png" alt="Scenario 2">
+            <h2>Scenario 2</h2>
+            <p>In this scenario we will add new compute host without control plane services.</p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+
+<!-- end gen ssh key -->
+
+<!-- SCALING -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>SCALING CLUSTER</strong></h3>
+           <p class="text-intro">Please execute as root on server_3:</p>
+<pre>snap install conjure-up --classic
+apt-get update; apt-get install --assume-yes --no-install-recommends -qq curl nfs-common git make;
+apt-get update && apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+cat << EOF >/etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update; apt-get install -y kubeadm=1.10.9-00 kubectl=1.10.9-00 kubelet=1.10.9-00 docker.io
+              </pre>
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end SCALING -->
+
+
+<!-- GENERATE K8S TOKEN-->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>GENERATE JOIN TOKEN</strong></h3>
+           <p class="text-intro">Please execute on k8s master host (server_1):</p>
+<pre>
+# it creates &lt;token&gt;
+sudo kubeadm token create
+
+# it shows &lt;ca-cert-hash&gt;
+sudo openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //' </pre>
+              </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end GENERATE k8s token -->
+
+<!-- JOIN CLUSTER -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>JOIN K8S CLUSTER</strong></h3>
+           <p class="text-intro">Please execute on new host (server_3):</p>
+<pre>
+kubeadm join --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;ca-cert-hash&gt; &lt;SERVER_1_IP_ADDRESS&gt;:6443
+</pre>
+              </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end GENERATE k8s token -->
+
+<!-- CONFIGURE LABELS FOR NEW NODE -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>CONFIGURE LABELS FOR NEW NODE</strong></h3>
+           <p class="text-intro">Please execute on k8s master node (server_1):</p>
+<pre>
+kubectl label nodes &lt;SERVER_3_HOSTNAME&gt; openvswitch=enabled openstack-compute-node=enabled openstack-control-plane=disabled openstack-helm-node-class=general --overwrite
+</pre>
+              </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end CONFIGURE LABELS -->
+
+
+<!-- WATCH CLUSTER GROWTH -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <h3><strong>WATCH CLUSTER GROWTH</strong></h3>
+           <p class="text-intro">Please execute on k8s master node (server_1):</p>
+<pre>
+watch "kubectl get pods --namespace openstack  | grep -viE '(running|completed)'"
+</pre>
+              </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end WATCH CLUSTER GROWTH -->
+
+<!-- WATCH CLUSTER GROWTH -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+           <div class="grid vertical-align">
+           <div class="column">
+             <h3><strong>VERIFY OPENSTACK INSTALLATION</strong></h3>
+             <p class="text-intro">Please execute on k8s master node (server_1):</p>
+           </div>
+           <div class="column">
+<pre>export OS_CLOUD=openstack_helm
+
+openstack hypervisor list 
+openstack compute service list
+</pre>
+              </div>
+            </div>
+            </div>
+            <!-- .end .grid -->
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+<!-- end WATCH CLUSTER GROWTH -->
+
+<!-- Spawn new vm -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3><strong>Spawn new VM</strong></h3>
+                <p class="text-intro">Please spawn second VM on new compute</p>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+<pre>export OS_CLOUD=openstack_helm
+
+openstack server create --flavor m1.tiny --image 'Cirros 0.3.5 64-bit' --network local --availability-zone nova:&lt;USER_NAME&gt;-compute-2 test-vm-2
+</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+
+          </footer>
+        </section>
+<!-- END SPAWN VM -->
+
+
+
+
+<!-- Spawn new vm -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3><strong>Verify connectivity between VMs</strong></h3>
+                <p class="text-intro">Use Horizon NoVNC console</p>
+              </div>
+              <!-- .end .column -->
+              <div class="column">
+<pre>ping, netcat, etc. between VMS;)
+</pre>
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+
+          </footer>
+        </section>
+<!-- END SPAWN VM -->
+
+
+
+
+
+    <!-- Q&A -->
+        <section>
+          <div class="aligncenter">
+              <h1>Q&A</h1>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+    <!-- end Q&A -->
+
+    <!-- links -->
+        <section>
+          <div class="alignleft">
+              <h1>Content informations:</h1>
+              <p><a href="https://kubernetes.io">https://kubernetes.io</a></p>
+              <p><a href="https://helm.sh/">https://helm.sh/</a></p>
+              <p><a href="https://fuel-ccp.readthedocs.io/en/latest/using_calico_instead_of_ovs.html">https://fuel-ccp.readthedocs.io/en/latest/using_calico_instead_of_ovs.html</a></p>
+              <p><a href="https://www.projectcalico.org/">https://www.projectcalico.org/</a></p>
+              <p><a href="https://github.com/helm/charts/tree/master/stable/mariadb">https://github.com/helm/charts/tree/master/stable/mariadb</a></p>
+              <p><a href="https://docs.openstack.org/kolla-kubernetes/latest/">https://docs.openstack.org/kolla-kubernetes/latest/</a></p>
+              <p><a href="https://www.openstack.org/assets/presentation-media/SYD-An-overview-of-container-related-projects-in-OpenStack-as-a-telco-guy-sees-them3.pdf">https://www.openstack.org/assets/presentation-media/SYD-An-overview-of-container-related-projects-in-OpenStack-as-a-telco-guy-sees-them3.pdf</a></p>
+              <p><a href="https://github.com/openstack/openstack-helm">https://github.com/openstack/openstack-helm</a></p>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+    <!-- end links -->
+
+    <!-- End workshop -->
+        <section class="aligncenter">
+          <h2>End of Openstack Helm workshop</h2>
+          <h2>Thank you!</h2>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+    <!-- end workshop -->
+
+    <!-- Conntact -->
+        <section class="aligncenter">
+          <h2>If you want to contact with us:</h2>
+          <p><b>Maciej Józefczyk</b> maciej.jozefczyk(at)corp.ovh.com</p>
+          <p><b>Daniel Pawlik</b> daniel.pawlik(at)corp.ovh.com</p>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+    <!-- end of contact -->
+
+<!-- Cheatsheet Kubernetes -->
+        <section>
+          <div class="slide-top content-center">
+                <h3>Kubernetes cheatsheet</h3>
+         </div>
+            <div class="grid vertical-align">
+              <div class="column">
+                <pre>
+# Get commands with basic output
+kubectl get services                          # List all services in the namespace
+kubectl get pods --all-namespaces             # List all pods in all namespaces
+kubectl get pods -o wide                      # List all pods in the namespace, with more details
+kubectl get deployment my-dep                 # List a particular deployment
+kubectl get pods --include-uninitialized      # List all pods in the namespace, including uninitialized ones
+
+# Describe commands with verbose output
+kubectl describe nodes my-node
+kubectl describe pods my-pod
+
+kubectl get services --sort-by=.metadata.name            # List Services Sorted by Name
+kubectl get events --sort-by=.metadata.creationTimestamp # List Events sorted by timestamp
+
+# Logs, port forward and exec:
+kubectl logs my-pod                                 # dump pod logs (stdout)
+kubectl logs my-pod --previous                      # dump pod logs (stdout) for a previous instantiation of a container
+kubectl logs -f my-pod                              # stream pod logs (stdout)
+kubectl port-forward my-pod 5000:6000               # Listen on port 5000 on the local machine and forward to port 6000 on my-pod
+kubectl exec my-pod -- ls /                         # Run command in existing pod (1 container case)
+kubectl exec my-pod --namespace openstack -- ls /   # Run command in existing pod from openstack namespace
+
+# Interacting with Nodes and Cluster
+kubectl cordon my-node                              # Mark my-node as unschedulable
+kubectl drain my-node                               # Drain my-node in preparation for maintenance
+kubectl uncordon my-node                            # Mark my-node as schedulable
+kubectl top node my-node                            # Show metrics for a given node
+kubectl cluster-info                                # Display addresses of the master and services
+kubectl cluster-info dump                           # Dump current cluster state to stdout
+
+# PersistentVolume and PersistentVolumesClaims
+kubectl get pv                                      # List persistent volumes
+kubectl get pvc                                     # List persistent volume claims
+kubectl describe pv my-pv                           # Show details about persistent volume
+kubectl describe pvc my-pvc                         # Show details about persistent volume claims
+</pre>
+
+<p><a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">Kubernetes cheatsheet</a></p>
+              </div>
+            </div>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+
+<!-- end of cheatsheet Kubernetes -->
+
+<!-- Cheatsheet Helm -->
+        <section>
+          <div class="slide-top content-center">
+                <h3>Helm cheatsheet</h3>
+         </div>
+            <div class="grid vertical-align">
+              <div class="column">
+                <pre>
+helm list --all
+helm repo (list|add|update)
+helm search
+helm inspect <chart-name>
+hem install --set a=b -f config.yaml <chart-name> -n <release-name> # --set take precedented, merge into -f
+helm status <deployment-name>
+helm delete <deployment-name>
+helm inspect values <chart-name>
+helm upgrade -f config.yaml <deployment-name> <chart-name>
+helm rollback <deployment-name> <version>
+
+helm create <chart-name>
+helm package <chart-name>
+helm lint <chart-name>
+
+helm dep up <chart-name> # update dependency
+helm get manifest <deployment-name>              # prints out all of the Kubernetes resources that were uploaded to the server
+helm install --debug --dry-run <deployment-name> # it will return the rendered template to you so you can see the output
+</pre>
+<p><a href="https://gist.github.com/tuannvm/4e1bcc993f683ee275ed36e67c30ac49">Gist Helm cheatsheet</a></p>
+<p><a href="https://docs.helm.sh/helm/#helm">Helm command doc</a></p>
+              </div>
+            </div>
+          </div>
+          <footer>
+            <div class="wrap">
+              <p>
+                <span class="alignleft"><img class="blacklogo" src="../presentation/img/ovh.png" alt="OVH"></span>
+                <span class="alignright">Maciej Józefczyk i Daniel Pawlik</span>
+              </p>
+            </div>
+          </footer>
+        </section>
+
+<!-- end of cheatsheet Helm -->
+      </article>
+      <!-- end article -->
+    </main>
+    <!-- end main -->
+
+    <!-- A global footer -->
+     <!--
+     <footer role="contentinfo">
+      <div class="wrap">
+        <p>An <a href="https://github.com/webslides/webslides">open source solution</a>, by <a href="https://twitter.com/webslides">@webslides</a>.</p>
+      </div>
+    </footer>  -->
+
+    <!-- Required -->
+    <!-- <script src="static/js/webslides.js"></script> -->
+    <script src="static/js/webslides-2.js"></script> <!-- disable up/down this.ws_.goPrev/this.ws_.goNext -->
+    <script>
+      window.ws = new WebSlides();
+    </script>
+
+    <!-- OPTIONAL - svg-icons.js (fontastic.me - Font Awesome as svg icons) -->
+    <script defer src="static/js/svg-icons.js"></script>
+
+  </body>
+</html>
